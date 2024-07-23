@@ -15,7 +15,26 @@ and to install [docker with GPU support](https://docs.nvidia.com/datacenter/clou
 
 NOTE: If you do not need inference, omit ```-f torchserve-cuda.yml``` in the commands below, and set ```TORCHSERVE``` to a blank string.
 
-# Standalone scenario
+# Waterfall Scenario
+
+```
+          +------------+
++---+ USB | x64        | 
+|SDR+---->|(Scanner,   |                
++---+     | Waterfall) |
+          +------------+
+```
+
+In this scenario GamutRF will scan the specified spectrum an generate a waterfall.
+
+1. edit ```.env``` and set ```FREQ_START```, ```FREQ_END``` (scan range) and ```VOL_PREFIX``` to local directory for storage.
+2. ```docker compose -f scanner.yml -f waterfall.yml up```
+3. GamutRF waterfall UI will appear on port 9003 (e.g. ```http://localhost:9003``` if running a browser on the same machine)
+
+Once the system is up and running, sample recording and frequency ranges can be controlled from the Waterfall UI.
+
+
+# Inference Scenario
 
 ```
           +------------+
@@ -26,10 +45,11 @@ NOTE: If you do not need inference, omit ```-f torchserve-cuda.yml``` in the com
           +------------+
 ```
 
-In this scenario, the complete GamutRF system is run on one machine, typically a laptop with a GPU.
+In this scenario, GamutRF will scan the spectrum and pass some of the captured spectrum to Torchserver, where a model can be run to try and classify signals. While some models can be run without a GPU, it is best to run Torchserve on a machine with an Nvidia GPU. The [Nvidia Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html) should be used to make the GPUs reachable inside the Torchserve container.
 
 1. edit ```.env``` and set ```FREQ_START```, ```FREQ_END``` (scan range) and ```VOL_PREFIX``` to local directory for storage.
-2. ```docker compose -f scanner.yml -f waterfall.yml -f torchserve-cuda.yml up -d```
+1. Edit `torchserve-cuda.yml` to point to the model you wish to run.
+2. ```docker compose -f scanner.yml -f waterfall.yml -f torchserve-cuda.yml up ```
 3. GamutRF waterfall UI will appear on port 9003 (e.g. ```http://localhost:9003``` if running a browser on the same machine)
 
 Once the system is up and running, sample recording and frequency ranges can be controlled from the Waterfall UI.
