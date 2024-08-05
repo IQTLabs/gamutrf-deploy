@@ -28,7 +28,7 @@ NOTE: If you do not need inference, omit ```-f torchserve-cuda.yml``` in the com
 In this scenario GamutRF will scan the specified spectrum an generate a waterfall.
 
 1. edit ```.env``` and set ```FREQ_START```, ```FREQ_END``` (scan range) and ```VOL_PREFIX``` to local directory for storage.
-2. ```docker compose -f scanner.yml -f waterfall.yml up```
+2. ```docker compose up```
 3. GamutRF waterfall UI will appear on port 9003 (e.g. ```http://localhost:9003``` if running a browser on the same machine)
 
 Once the system is up and running, sample recording and frequency ranges can be controlled from the Waterfall UI.
@@ -49,7 +49,7 @@ In this scenario, GamutRF will scan the spectrum and pass some of the captured s
 
 1. edit ```.env``` and set ```FREQ_START```, ```FREQ_END``` (scan range) and ```VOL_PREFIX``` to local directory for storage.
 1. Edit `torchserve-cuda.yml` to point to the model you wish to run.
-2. ```docker compose -f scanner.yml -f waterfall.yml -f torchserve-cuda.yml up ```
+2. ```docker compose -f torchserve-cuda.yml up ```
 3. GamutRF waterfall UI will appear on port 9003 (e.g. ```http://localhost:9003``` if running a browser on the same machine)
 
 Once the system is up and running, sample recording and frequency ranges can be controlled from the Waterfall UI.

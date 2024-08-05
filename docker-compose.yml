@@ -47,10 +47,10 @@ services:
       - 'HOME=/logs'
     command:
       - gamutrf-scan
-      - --iq_zmq_addr=0.0.0.0
-      - --iq_zmq_port=10002
-      - --fft_zmq_addr=0.0.0.0
-      - --fft_zmq_port=10000
+      # - --iq_zmq_addr=0.0.0.0
+      # - --iq_zmq_port=10002
+      - --logaddr=0.0.0.0 #- --fft_zmq_addr=0.0.0.0
+      - --logport=10000 #- --fft_zmq_port=10000
       - --igain=40
       - '--freq-start=${FREQ_START}'
       - '--freq-end=${FREQ_END}'
@@ -73,24 +73,48 @@ services:
       - --pretune
       # - --external_gps_server=1.2.3.4
       # - --external_gps_server_port=8888
-      - --inference_text_color=black
-      - --inference_output_dir=/logs/inference
-      - --inference_addr=0.0.0.0
-      - --inference_port=10001
-      - --inference_min_confidence=0.25
-      - --inference_min_db=-1e9
-      - --inference_text_color=black
-      - --n_inference=7
-      - --n_image=7
+      # - --inference_text_color=black
+      # - --inference_output_dir=/logs/inference
+      # - --inference_addr=0.0.0.0
+      # - --inference_port=10001
+      # - --inference_min_confidence=0.25
+      # - --inference_min_db=-1e9
+      # - --inference_text_color=black
+      # - --n_inference=7
+      # - --n_image=7
       # - --inference_model_server=torchserve:8080
       # - --inference_model_name=mini2_snr
       - --iq_inference_squelch_db=-50
-      - --iq_inference_model_server=torchserve:8080
-      - --iq_inference_model_name=torchsig_model
-      # - --write_samples=1000000000
+      - --iq_inference_len=1024
+      # - --iq_inference_model_server=torchserve:8080
+      # - --iq_inference_model_name=torchsig_model
+      - --write_samples=100000000
       - --sample_dir=/logs/samples
     healthcheck:
       test: [CMD, "/gamutrf/bin/scanhc.sh", "9000"]
       interval: 10s
       timeout: 10s
       retries: 3
+  waterfall:
+    restart: always
+    image: iqtlabs/gamutrf-waterfall:v0.5.62
+    networks:
+      - gamutrf
+    ports:
+      - '9003:9003'
+    volumes:
+      - '${VOL_PREFIX}:/logs'
+    command:
+      - gamutrf-waterfall
+      - --api_endpoint=${GAMUTRF}:9001
+      - --scanners=${GAMUTRF}:10000
+      - --inference_server=${GAMUTRF}
+      - --inference_port=10001
+      - --save_path=/logs/waterfall
+      - --port=9003
+      # - --detection_type=narrowband
+      # - --n_detect=1
+      - --width=18
+      - --height=13
+      - --min_freq=0
+      - --max_freq=0

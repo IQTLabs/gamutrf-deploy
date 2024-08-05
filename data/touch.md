@@ -1,0 +1,1 @@
+This directory will be used by GamutRF for savings samples and FFTs.
