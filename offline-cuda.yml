@@ -30,6 +30,19 @@ services:
     cap_add:
       - SYS_NICE
       - SYS_RAWIO
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+      - /dev/dri/renderD128:/dev/dri/renderD128
+    # nvidia container toolkit etc must be installed.
+    # Comment out "deploy" if on non-x86 platform (e.g. Pi4)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              # count: 1
+              capabilities: [gpu]
     volumes:
       - '${VOL_PREFIX}:/logs'
       - '/tmp/.X11-unix:/tmp/.X11-unix'
