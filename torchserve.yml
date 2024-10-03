@@ -27,4 +27,4 @@ services:
       # to your requirements.txt when generating a MAR file
       # https://github.com/pytorch/serve/issues/3176
       - --disable-token-auth
-      - --models mini2_snr=mini2_snr.mar
+      - --models torchsig_model=siggen_model.mar
