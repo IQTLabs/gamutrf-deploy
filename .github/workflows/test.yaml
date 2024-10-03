@@ -15,4 +15,5 @@ jobs:
         docker compose -f torchserve.yml config && \
         docker compose -f torchserve-cuda.yml config && \
         docker compose -f waterfall.yml config && \
-        docker compose -f scanner.yml -f waterfall.yml -f torchserve-cuda.yml config
+        docker compose -f scanner.yml -f waterfall.yml -f torchserve-cuda.yml config && \
+        docker compose -f offline.yml -f offline.yml config
